@@ -33,8 +33,7 @@ jobs:
 
       - name: Create full Flutter project structure (adds missing android/ios folders)
         run: |
-          flutter create --platforms=android --org com.rebelx.esports .
-
+          flutter create --platforms=android --org com.rebelx.esports --project-name rebelx_esports .
       - name: Restore my main.dart and pubspec.yaml
         run: |
           cp -r /tmp/mysrc/lib/* lib/
