@@ -1,0 +1,53 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: Save my lib and pubspec before scaffolding
+        run: |
+          mkdir -p /tmp/mysrc
+          cp -r lib /tmp/mysrc/lib
+          cp pubspec.yaml /tmp/mysrc/pubspec.yaml
+
+      - name: Create full Flutter project structure (adds missing android/ios folders)
+        run: |
+          flutter create --platforms=android --org com.rebelx.esports .
+
+      - name: Restore my main.dart and pubspec.yaml
+        run: |
+          cp -r /tmp/mysrc/lib/* lib/
+          cp /tmp/mysrc/pubspec.yaml pubspec.yaml
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: rebelx-esports-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
