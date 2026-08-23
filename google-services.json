@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "427994924793",
+    "project_id": "skill-to-win",
+    "storage_bucket": "skill-to-win.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427994924793:android:f164d727bcde90ce874428",
+        "android_client_info": {
+          "package_name": "com.rebelx.esports"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqCS4iBrLxTD-Bc9MVrSKRCTV0hNo9vnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
