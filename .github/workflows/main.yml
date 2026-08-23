@@ -40,8 +40,10 @@ jobs:
           sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
       - name: Add Google Services plugin for Firebase
         run: |
-          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services") version "4.4.2" apply false' android/settings.gradle.kts
-          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services")' android/app/build.gradle.kts
+         sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services") version "4.4.2" apply false' android/settings.gradle.kts 2>/dev/null || true
+         sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services") version "4.4.2" apply false' android/settings.gradle 2>/dev/null || true
+         sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services")' android/app/build.gradle.kts 2>/dev/null || true
+         sed -i "/id 'com.android.application'/a\\    id 'com.google.gms.google-services'" android/app/build.gradle 2>/dev/null || true
       - name: Copy Firebase config file
         run: |
           cp google-services.json android/app/google-services.json
