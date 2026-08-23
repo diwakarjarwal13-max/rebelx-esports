@@ -31,22 +31,25 @@ jobs:
           cp -r lib /tmp/mysrc/lib
           cp pubspec.yaml /tmp/mysrc/pubspec.yaml
 
-      - name: Create full Flutter project structure (adds missing android/ios folders)
+      - name: Create full Flutter project structure
         run: |
           flutter create --platforms=android --org com.rebelx.esports --project-name rebelx_esports .
 
       - name: Set minimum Android SDK version for Firebase
         run: |
-          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle.kts || true
-          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
+          sed -i 's/minSdkVersion.*/minSdkVersion = 23/' android/app/build.gradle.kts || true
+          sed -i 's/minSdkVersion.*/minSdkVersion 23/' android/app/build.gradle || true
 
-      - name: Add Google Services plugin for Firebase
+      - name: Add Google Services Plugin to Gradle
         run: |
-          echo 'buildscript { repositories { google(); mavenCentral() } dependencies { classpath "com.google.gms:google-services:4.4.1" } }' >> android/build.gradle
+          # settings.gradle me plugin Management inject karna safely
+          sed -i '1s/^/pluginManagement { plugins { id("com.google.gms.google-services") version "4.4.1" apply false } }\n/' android/settings.gradle || true
+          # app/build.gradle ke bottom me plugin apply karna
           echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
 
       - name: Copy Firebase config file
         run: |
+          mkdir -p android/app
           cp google-services.json android/app/google-services.json
 
       - name: Restore my main.dart and pubspec.yaml
