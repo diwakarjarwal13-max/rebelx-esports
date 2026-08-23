@@ -34,6 +34,10 @@ jobs:
       - name: Create full Flutter project structure (adds missing android/ios folders)
         run: |
           flutter create --platforms=android --org com.rebelx.esports --project-name rebelx_esports .
+      - name: Set minimum Android SDK version for Firebase
+        run: |
+          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle.kts || true
+          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
       - name: Copy Firebase config file
         run: |
           cp google-services.json android/app/google-services.json
