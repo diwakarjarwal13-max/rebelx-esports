@@ -35,15 +35,12 @@ jobs:
         run: |
           flutter create --platforms=android --org com.rebelx.esports --project-name rebelx_esports .
 
-      - name: Set minimum Android SDK version for Firebase
+      - name: Set minimum SDK via local.properties (Firebase requirement)
         run: |
-          sed -i 's/minSdkVersion.*/minSdk = 23/' android/app/build.gradle.kts || true
-          sed -i 's/minSdkVersion.*/minSdk = 23/' android/app/build.gradle || true
-          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
-          
+          echo "flutter.minSdkVersion=23" >> android/local.properties
+
       - name: Apply Google Services Plugin safely
         run: |
-          # android/app/build.gradle me plugin apply karna (duplicate checks ke saath)
           grep -q "com.google.gms.google-services" android/app/build.gradle || echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
 
       - name: Copy Firebase config file
