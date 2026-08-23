@@ -567,4 +567,170 @@ class MatchesScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade2
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Chip(
+                  label: Text(time, style: const TextStyle(fontSize: 12, color: Colors.white)),
+                  backgroundColor: const Color(0xFF2563EB)),
+            ],
+          ),
+          const Divider(height: 20),
+          // One-Click Room ID Copy Box
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration:
+                BoxDecoration(color: Colors.amber.shade50, borderRadius: BorderRadius.circular(8)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(roomId, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: roomId));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Room ID Copied!')));
+                  },
+                  child: const Row(
+                    children: [
+                      Icon(Icons.copy, size: 16, color: Colors.amber),
+                      SizedBox(width: 4),
+                      Text('COPY',
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, fontSize: 12)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF16A34A)),
+              onPressed: () {},
+              child: const Text('JOIN NOW',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------
+// REFER SCREEN
+// ---------------------------------------------------------------------
+class ReferScreen extends StatelessWidget {
+  const ReferScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const String referCode = "REBEL100";
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        title: const Text('Refer & Earn',
+            style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        elevation: 1,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            const Icon(Icons.card_giftcard, size: 80, color: Color(0xFF2563EB)),
+            const SizedBox(height: 15),
+            const Text('Invite Friends & Earn ₹20',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            const Text('Jab aapka dost register karega, dono ko ₹20 bonus milega.',
+                textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 30),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(referCode,
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2563EB)),
+                    icon: const Icon(Icons.copy, size: 16, color: Colors.white),
+                    label: const Text('COPY', style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      Clipboard.setData(const ClipboardData(text: referCode));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Referral Code Copied!')),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------
+// LEADERBOARD SCREEN
+// ---------------------------------------------------------------------
+class LeaderboardScreen extends StatelessWidget {
+  const LeaderboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        title: const Text('Top Players Leaderboard',
+            style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        elevation: 1,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildLeaderTile('1', 'ProSniper_99', '₹5,400 Won', Colors.amber),
+          _buildLeaderTile('2', 'GamerX_OP', '₹4,100 Won', Colors.grey),
+          _buildLeaderTile('3', 'RebelKing', '₹3,200 Won', Colors.brown),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLeaderTile(String rank, String name, String winnings, Color badgeColor) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: badgeColor,
+          child: Text(rank, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: const Text('Badge: Pro Player'),
+        trailing: Text(winnings,
+            style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 15)),
+      ),
+    );
+  }
+}
+
