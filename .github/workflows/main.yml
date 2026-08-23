@@ -2,7 +2,8 @@ name: Build APK
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -13,50 +14,32 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
-          channel: 'stable'
+          flutter-version: 3.24.0
+          channel: stable
 
-      - name: Save my lib and pubspec before scaffolding
-        run: |
-          mkdir -p /tmp/mysrc
-          cp -r lib /tmp/mysrc/lib
-          cp pubspec.yaml /tmp/mysrc/pubspec.yaml
+      - name: Flutter Doctor
+        run: flutter doctor -v
 
-      - name: Create full Flutter project structure
-        run: |
-          flutter create --platforms=android --org com.rebelx.esports --project-name rebelx_esports .
-
-      - name: Set minimum SDK via local.properties (Firebase requirement)
-        run: |
-          echo "flutter.minSdkVersion=23" >> android/local.properties
-
-      - name: Apply Google Services Plugin safely
-        run: |
-          grep -q "com.google.gms.google-services" android/app/build.gradle || echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
-
-      - name: Copy Firebase config file
-        run: |
-          mkdir -p android/app
-          cp google-services.json android/app/google-services.json
-
-      - name: Restore my main.dart and pubspec.yaml
-        run: |
-          cp -r /tmp/mysrc/lib/* lib/
-          cp /tmp/mysrc/pubspec.yaml pubspec.yaml
-
-      - name: Get dependencies
+      - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Create google-services.json if exists
+        run: |
+          if [ -f google-services.json ]; then
+            mkdir -p android/app
+            cp google-services.json android/app/google-services.json
+          fi
+
+      - name: Build Release APK
         run: flutter build apk --release
 
       - name: Upload APK
@@ -64,4 +47,3 @@ jobs:
         with:
           name: rebelx-esports-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-          
