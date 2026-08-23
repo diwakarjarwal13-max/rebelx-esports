@@ -37,9 +37,10 @@ jobs:
 
       - name: Set minimum Android SDK version for Firebase
         run: |
-          sed -i 's/minSdkVersion.*/minSdkVersion = 23/' android/app/build.gradle.kts || true
-          sed -i 's/minSdkVersion.*/minSdkVersion 23/' android/app/build.gradle || true
-
+          sed -i 's/minSdkVersion.*/minSdk = 23/' android/app/build.gradle.kts || true
+          sed -i 's/minSdkVersion.*/minSdk = 23/' android/app/build.gradle || true
+          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
+          
       - name: Apply Google Services Plugin safely
         run: |
           # android/app/build.gradle me plugin apply karna (duplicate checks ke saath)
