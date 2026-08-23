@@ -40,12 +40,10 @@ jobs:
           sed -i 's/minSdkVersion.*/minSdkVersion = 23/' android/app/build.gradle.kts || true
           sed -i 's/minSdkVersion.*/minSdkVersion 23/' android/app/build.gradle || true
 
-      - name: Add Google Services Plugin to Gradle
+      - name: Apply Google Services Plugin safely
         run: |
-          # settings.gradle me plugin Management inject karna safely
-          sed -i '1s/^/pluginManagement { plugins { id("com.google.gms.google-services") version "4.4.1" apply false } }\n/' android/settings.gradle || true
-          # app/build.gradle ke bottom me plugin apply karna
-          echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
+          # android/app/build.gradle me plugin apply karna (duplicate checks ke saath)
+          grep -q "com.google.gms.google-services" android/app/build.gradle || echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
 
       - name: Copy Firebase config file
         run: |
