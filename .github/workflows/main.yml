@@ -44,6 +44,12 @@ jobs:
          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services") version "4.4.2" apply false' android/settings.gradle 2>/dev/null || true
          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services")' android/app/build.gradle.kts 2>/dev/null || true
          sed -i "/id 'com.android.application'/a\\    id 'com.google.gms.google-services'" android/app/build.gradle 2>/dev/null || true
+      - name: Debug - show gradle files
+        run: |
+          echo "----- settings.gradle.kts -----"
+          cat android/settings.gradle.kts
+          echo "----- app/build.gradle.kts -----"
+          cat android/app/build.gradle.kts
       - name: Copy Firebase config file
         run: |
           cp google-services.json android/app/google-services.json
