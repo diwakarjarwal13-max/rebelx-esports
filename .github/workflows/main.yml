@@ -42,7 +42,7 @@ jobs:
 
       - name: Add Google Services plugin for Firebase
         run: |
-          echo 'buildscript { dependencies { classpath "com.google.gms:google-services:4.4.1" } }' >> android/build.gradle
+          echo 'buildscript { repositories { google(); mavenCentral() } dependencies { classpath "com.google.gms:google-services:4.4.1" } }' >> android/build.gradle
           echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
 
       - name: Copy Firebase config file
