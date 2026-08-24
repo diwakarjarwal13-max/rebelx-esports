@@ -34,32 +34,19 @@ jobs:
       - name: Create full Flutter project structure
         run: |
           flutter create --platforms=android --org com.rebelx --project-name esports .
-          
 
-      - name: Set minimum Android SDK version for Firebase
-        run: |
-          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle.kts || true
-          sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
-          
-      - name: Fix package name to match Firebase
-        run: |
-          sed -i 's/com.rebelx.esports.rebelx_esports/com.rebelx.esports/g' android/app/build.gradle
-
-      - name: Add Google Services plugin for Firebase
-        run: |
-          sed -i '/id "com.android.application"/a\    id "com.google.gms.google-services" version "4.4.2" apply false' android/settings.gradle
-          sed -i '/id "com.android.application"/a\    id "com.google.gms.google-services"' android/app/build.gradle
-          
-      - name: Debug - show gradle content
-        run: |
-          echo "----- android/build.gradle -----"
-          cat android/build.gradle
-          echo "----- android/app/build.gradle -----"
-          cat android/app/build.gradle
-          
       - name: Copy Firebase config file
         run: |
+          mkdir -p android/app
           cp google-services.json android/app/google-services.json
+
+      - name: Apply Google Services Plugin in build.gradle
+        run: |
+          echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
+
+      - name: Set minimum SDK via local.properties
+        run: |
+          echo "flutter.minSdkVersion=23" >> android/local.properties
 
       - name: Restore my main.dart and pubspec.yaml
         run: |
@@ -77,4 +64,4 @@ jobs:
         with:
           name: rebelx-esports-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
+          
