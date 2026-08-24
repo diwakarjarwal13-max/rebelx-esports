@@ -35,13 +35,20 @@ jobs:
         run: |
           flutter create --platforms=android --org com.rebelx --project-name esports .
 
-      - name: Copy Firebase config file
+      - name: Decode & Copy google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
           mkdir -p android/app
-          cp google-services.json android/app/google-services.json
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            echo "$GOOGLE_SERVICES_JSON" | base64 -d > android/app/google-services.json
+          else
+            cp google-services.json android/app/google-services.json || true
+          fi
 
-      - name: Apply Google Services Plugin in build.gradle
+      - name: Configure Root and App build.gradle for Google Services
         run: |
+          sed -i '/dependencies {/a \        classpath "com.google.gms:google-services:4.4.1"' android/build.gradle
           echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
 
       - name: Set minimum SDK via local.properties
