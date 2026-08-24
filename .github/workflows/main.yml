@@ -39,6 +39,10 @@ jobs:
         run: |
           sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle.kts || true
           sed -i 's/flutter.minSdkVersion/23/' android/app/build.gradle || true
+          
+      - name: Fix package name to match Firebase
+        run: |
+          sed -i 's/com.rebelx.esports.rebelx_esports/com.rebelx.esports/g' android/app/build.gradle
 
       - name: Add Google Services plugin for Firebase
         run: |
