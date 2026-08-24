@@ -5,12 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const EsportsApp());
+  String? firebaseError;
+  try {
+    await Firebase.initializeApp();
+  } catch (e, stack) {
+    firebaseError = e.toString();
+    debugPrint('FIREBASE INIT FAILED: $e\n$stack');
+  }
+  runApp(EsportsApp(firebaseError: firebaseError));
 }
 
 class EsportsApp extends StatelessWidget {
-  const EsportsApp({super.key});
+  final String? firebaseError;
+  const EsportsApp({super.key, this.firebaseError});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,50 @@ class EsportsApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
         primaryColor: const Color(0xFF2563EB),
       ),
-      home: const AuthWrapper(),
+      home: firebaseError != null
+          ? FirebaseErrorScreen(error: firebaseError!)
+          : const AuthWrapper(),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------
+// FIREBASE ERROR SCREEN - shows the real error instead of an endless
+// splash screen, so we can see exactly what went wrong.
+// ---------------------------------------------------------------------
+class FirebaseErrorScreen extends StatelessWidget {
+  final String error;
+  const FirebaseErrorScreen({super.key, required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                  const SizedBox(height: 16),
+                  const Text('Firebase failed to start',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  SelectableText(
+                    error,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 13, color: Colors.black87),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -37,6 +87,9 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return FirebaseErrorScreen(error: snapshot.error.toString());
+        }
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
