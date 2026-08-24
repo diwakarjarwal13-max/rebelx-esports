@@ -42,8 +42,8 @@ jobs:
 
       - name: Add Google Services plugin for Firebase
         run: |
-          sed -i "/classpath 'com.android.tools.build:gradle/a\\    classpath 'com.google.gms:google-services:4.4.2'" android/build.gradle
-          sed -i "/apply plugin: 'com.android.application'/a\\apply plugin: 'com.google.gms.google-services'" android/app/build.gradle
+          sed -i '/id "com.android.application"/a\    id "com.google.gms.google-services" version "4.4.2" apply false' android/settings.gradle
+          sed -i '/id "com.android.application"/a\    id "com.google.gms.google-services"' android/app/build.gradle
           
       - name: Debug - show gradle content
         run: |
