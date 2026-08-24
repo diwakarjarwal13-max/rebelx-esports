@@ -48,8 +48,8 @@ jobs:
 
       - name: Configure Root and App build.gradle for Google Services
         run: |
-          sed -i '/dependencies {/a \        classpath "com.google.gms:google-services:4.4.1"' android/build.gradle
-          echo 'apply plugin: "com.google.gms.google-services"' >> android/app/build.gradle
+          sed -i '/id "org.jetbrains.kotlin.android"/a\    id "com.google.gms.google-services" version "4.4.2" apply false' android/settings.gradle
+          sed -i '/id "dev.flutter.flutter-gradle-plugin"/a\    id "com.google.gms.google-services"' android/app/build.gradle
 
       - name: Set minimum SDK via local.properties
         run: |
