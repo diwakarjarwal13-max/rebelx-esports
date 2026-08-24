@@ -31,9 +31,10 @@ jobs:
           cp -r lib /tmp/mysrc/lib
           cp pubspec.yaml /tmp/mysrc/pubspec.yaml
 
-      - name: Create full Flutter project structure (adds missing android/ios folders)
+      - name: Create full Flutter project structure
         run: |
-          flutter create --platforms=android --org com.rebelx.esports --project-name rebelx_esports .
+          flutter create --platforms=android --org com.rebelx --project-name esports .
+          
 
       - name: Set minimum Android SDK version for Firebase
         run: |
