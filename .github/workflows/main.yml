@@ -32,12 +32,12 @@ jobs:
           cp -r lib /tmp/mysrc/lib
           cp pubspec.yaml /tmp/mysrc/pubspec.yaml
 
-      # 2. Fresh Android structure recreate karna (Sahi space aur dot configuration ke sath)
+      # 2. Fresh Android structure recreate karna
       - name: Create full Flutter project structure
         run: |
           flutter create --platforms=android --org com.rebelx --project-name esports .
 
-      # 3. Google Services JSON ko decode karna (Bash syntax errors ko sahi kiya hai)
+      # 3. Google Services JSON ko decode karna
       - name: Decode & Copy google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
@@ -49,18 +49,14 @@ jobs:
             echo "Warning: GOOGLE_SERVICES_JSON secret is missing!"
           fi
 
-      # 4. Google Services Plugins ko Android native files mein sahi jagah inject karna (Fix kiya gaya plugin location)
+      # 4. Modern Flutter/Gradle syntax ke sath Firebase configurations inject karna
       - name: Configure Root and App build.gradle for Google Services
         run: |
-          # Root level build.gradle mein Google Services class path / plugin set karna
-          sed -i '/repositories {/a\        mavenCentral()' android/build.gradle
+          # Root level settings.gradle ya build.gradle ke plugins block mein id "com.google.gms.google-services" version "4.4.2" apply false ko add karna
+          sed -i '/plugins {/a\    id "com.google.gms.google-services" version "4.4.2" apply false' android/build.gradle
           
-          # App level build.gradle mein plugin apply karna jo values.xml ko compile time par generate karega
-          if grep -q "plugins {" android/app/build.gradle; then
-            sed -i '/plugins {/a\    id "com.google.gms.google-services"' android/app/build.gradle
-          else
-            sed -i '1i apply plugin: "com.google.gms.google-services"' android/app/build.gradle
-          fi
+          # App level build.gradle ke plugins block mein id "com.google.gms.google-services" inject karna
+          sed -i '/plugins {/a\    id "com.google.gms.google-services"' android/app/build.gradle
 
       # 5. Minimum SDK version build configuration ko sahi karna
       - name: Set minimum SDK
@@ -73,8 +69,11 @@ jobs:
           cp -r /tmp/mysrc/lib/* lib/
           cp /tmp/mysrc/pubspec.yaml pubspec.yaml
 
+      # 7. Multi-dex aur automatic resource matching issues ko crash se bachane ke liye explicitly clean build run karna
       - name: Get dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          flutter clean
 
       - name: Build APK
         run: flutter build apk --release
