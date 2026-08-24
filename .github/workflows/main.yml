@@ -45,6 +45,13 @@ jobs:
           else
             cp google-services.json android/app/google-services.json || true
           fi
+      - name: Debug google-services.json
+        run: |
+          echo "---- google-services.json content ----"
+          cat android/app/google-services.json
+          echo "---------------------------------------"
+          echo "applicationId in build.gradle:"
+          grep "applicationId" android/app/build.gradle || true
 
       - name: Configure Root and App build.gradle for Google Services
         run: |
@@ -59,7 +66,11 @@ jobs:
         run: |
           cp -r /tmp/mysrc/lib/* lib/
           cp /tmp/mysrc/pubspec.yaml pubspec.yaml
-
+      - name: Debug generated Firebase values.xml
+        if: always()
+        run: |
+          find android/app/build -iname "values.xml" -path "*google-services*" -exec echo "FOUND: {}" \; -exec cat {} \; || echo "NOT FOUND — plugin did not generate values.xml"
+          
       - name: Get dependencies
         run: flutter pub get
 
